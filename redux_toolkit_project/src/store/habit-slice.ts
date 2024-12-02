@@ -19,7 +19,9 @@ const initialState: HabitState = {
 const habitSlice = createSlice({
   name: "habits",
   initialState,
-  reducers: {},
+  reducers: {
+    addHabit: () => {},
+  },
 });
 
 export const { addHabit } = habitSlice.actions;
