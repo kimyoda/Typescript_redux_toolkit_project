@@ -8,13 +8,31 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { AddDispatch } from "../store/store";
+import { addHabit } from "../store/habit-slice";
 
 const AddHabitForm: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [frequency, setFrequency] = useState<"daily" | "weekly">("daily");
 
+  const dispatch = useDispatch<AddDispatch>();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      dispatch(
+        addHabit({
+          name,
+          frequency,
+        })
+      );
+      setName("");
+    }
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
       <Box
         sx={{
           display: "flex",
@@ -43,7 +61,7 @@ const AddHabitForm: React.FC = () => {
           습관추가
         </Button>
       </Box>
-    </div>
+    </form>
   );
 };
 
