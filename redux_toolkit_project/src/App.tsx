@@ -3,6 +3,7 @@ import "./App.css";
 import store from "./store/store";
 import { Container, Typography } from "@mui/material";
 import AddHabitForm from "./components/add_habit_form";
+import HabitList from "./components/habit_list";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           습관 리스트
         </Typography>
         <AddHabitForm />
+        <HabitList />
       </Container>
     </Provider>
   );
