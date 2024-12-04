@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Habit {
   id: string;
@@ -10,11 +10,38 @@ export interface Habit {
 
 interface HabitState {
   habits: Habit[];
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: HabitState = {
   habits: [],
+  isLoading: false,
+  error: null,
 };
+
+export const fetchHabits = createAsyncThunk("habits/fetchHabits", async () => {
+  // API call 시뮬레이션
+  await new Promise((resovle) => setTimeout(resovle, 1000));
+
+  const mockHabits: Habit[] = [
+    {
+      id: "1",
+      name: "책읽기",
+      frequency: "daily",
+      completedDates: [],
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      name: "운동",
+      frequency: "daily",
+      completedDates: [],
+      createdAt: new Date().toISOString(),
+    },
+  ];
+  return mockHabits;
+});
 
 const habitSlice = createSlice({
   name: "habits",
@@ -49,10 +76,28 @@ const habitSlice = createSlice({
         }
       }
     },
-    removeHabit: () => {},
+    removeHabit: (state, action: PayloadAction<string>) => {
+      state.habits = state.habits.filter(
+        (habit) => habit.id !== action.payload
+      );
+    },
+  },
+  extraReducers: (bulider) => {
+    bulider
+      .addCase(fetchHabits.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchHabits.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.habits = action.payload;
+      })
+      .addCase(fetchHabits.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || "습관 동기 실패";
+      });
   },
 });
 
-export const { addHabit, toggleHabit } = habitSlice.actions;
+export const { addHabit, toggleHabit, removeHabit } = habitSlice.actions;
 
 export default habitSlice.reducer;
